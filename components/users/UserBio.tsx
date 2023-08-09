@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useUser from "@/hooks/useUser";
 import useFollow from "@/hooks/useFollow";
-import useEditModal from "@/hooks/useEdit";
+import useEditModal from "@/hooks/useEditModal";
 
 import Button from "../Button";
 
@@ -40,7 +40,7 @@ const UserBio: React.FC<UserBioProps> = ({ userId }) => {
             onClick={toggleFollow} 
             label={isFollowing ? 'Unfollow' : 'Follow'}
             secondary={!isFollowing}
-            outLine={isFollowing}
+            outline={isFollowing}
           />
         )}
       </div>

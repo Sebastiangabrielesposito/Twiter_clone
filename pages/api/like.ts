@@ -11,7 +11,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { postId } = req.body;
 
-    const { currentUser } = await serverAuth(req, res);
+    // const { currentUser } = await serverAuth(req, res);
+    const  currentUserData  = await serverAuth(req, res);
+    const currentUser = currentUserData ? currentUserData.currentUser : null;
+    
 
     if (!postId || typeof postId !== 'string') {
       throw new Error('Invalid ID');
@@ -30,7 +33,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let updatedLikedIds = [...(post.likedIds || [])];
 
     if (req.method === 'POST') {
-      updatedLikedIds.push(currentUser.id);
+      if (currentUser) {
+        updatedLikedIds.push(currentUser.id);
+      // updatedLikedIds.push(currentUser.id);
       
       // NOTIFICATION PART START
       try {
@@ -60,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       } catch(error) {
         console.log(error);
       }
-      // NOTIFICATION PART END
+    }// NOTIFICATION PART END
     }
 
     if (req.method === 'DELETE') {

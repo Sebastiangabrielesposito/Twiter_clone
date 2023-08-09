@@ -9,7 +9,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { currentUser } = await serverAuth(req, res);
+    // const { currentUser } = await serverAuth(req, res);
+    const  currentUserData  = await serverAuth(req, res);
+    const currentUser = currentUserData ? currentUserData.currentUser : null;
+
     const { body } = req.body;
     const { postId } = req.query;
 
@@ -17,14 +20,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw new Error('Invalid ID');
     }
 
-    const comment = await prisma.comment.create({
-      data: {
-        body,
-        userId: currentUser.id,
-        postId
-      }
-    });
+    // const comment = await prisma.comment.create({
+    //   data: {
+    //     body,
+    //     userId: currentUser?.id,
+    //     postId
+    //   }
+    // });
 
+    const commentData = {
+      body,
+      userId: currentUser?.id,
+      postId
+    };
+
+    const comment = await prisma.comment.create({
+      data: commentData as any
+    });
     // NOTIFICATION PART START
     try {
       const post = await prisma.post.findUnique({
