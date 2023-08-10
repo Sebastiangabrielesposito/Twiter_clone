@@ -11,14 +11,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     
     if (req.method === 'POST') {
-      const { currentUser } = await serverAuth(req, res);
+      // const { currentUser } = await serverAuth(req, res);
+      const  currentUserData  = await serverAuth(req, res);
+    const currentUser = currentUserData ? currentUserData.currentUser : null;
       const { body } = req.body;
 
-      const post = await prisma.post.create({
-        data: {
-          body,
-          userId: currentUser.id
-        }
+      // const post = await prisma.post.create({
+      //   data: {
+      //     body,
+      //     userId: currentUser?.id
+      //   }
+      // });
+
+      const postData = {
+        body,
+        userId: currentUser?.id,
+      };
+  
+      const post = await prisma.comment.create({
+        data: postData as any
       });
 
       return res.status(200).json(post);
