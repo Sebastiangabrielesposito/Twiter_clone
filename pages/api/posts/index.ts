@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import serverAuth from "@/libs/serverAuth";
 import prisma from "@/libs/prismadb";
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).end();
@@ -11,27 +12,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     
     if (req.method === 'POST') {
-      // const { currentUser } = await serverAuth(req, res);
+      // const  {currentUser}  = await serverAuth(req, res);
       const  currentUserData  = await serverAuth(req, res);
-    const currentUser = currentUserData ? currentUserData.currentUser : null;
+      const currentUser = currentUserData ? currentUserData.currentUser : null;
       const { body } = req.body;
 
-      // const post = await prisma.post.create({
-      //   data: {
-      //     body,
-      //     userId: currentUser?.id
-      //   }
-      // });
+      
+      if (!currentUser) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
 
-      const postData = {
-        body,
-        userId: currentUser?.id,
-      };
-  
-      const post = await prisma.comment.create({
-        data: postData as any
+       const post = await prisma.post.create({
+        data: {
+          body,
+          userId: currentUser?.id
+        }
       });
 
+  
       return res.status(200).json(post);
     }
 
